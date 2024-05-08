@@ -9,7 +9,7 @@ attrs==21.2.0
 Babel==2.9.1
 backcall==0.2.0
 backports.functools-lru-cache==1.6.4
-bigbird==0.0.1
+bigbird==0.0.2
 bleach==3.3.0
 blis==0.7.4
 brotlipy==0.7.0
@@ -69,7 +69,7 @@ ipython-genutils==0.2.0
 ipywidgets==7.6.3
 itsdangerous==2.0.1
 jax==0.2.13
-jaxlib==0.1.67
+jaxlib==0.4.27
 jedi==0.18.0
 Jinja2==3.0.1
 joblib==1.0.1
@@ -157,7 +157,7 @@ scipy==1.6.3
 seaborn==0.11.1
 Send2Trash==1.5.0
 sentencepiece==0.1.95
-setuptools==49.6.0.post20210108
+setuptools==49.6.0
 six==1.15.0
 sklearn==0.0
 smart-open==3.0.0
@@ -185,17 +185,17 @@ termcolor==1.1.0
 terminado==0.10.0
 testpath==0.5.0
 tf-slim==1.1.0
-tfds-nightly==4.3.0.dev202106070106
+tfds-nightly==4.4.0.dev202112170108
 thinc==8.0.3
 threadpoolctl==2.1.0
 tokenizers==0.10.3
 toml==0.10.2
 toolz==0.11.1
-torch==1.8.1+cu111
+torch==1.8.1
 torchaudio==0.8.1
 torchsummary==1.5.1
 torchtext==0.9.1
-torchvision==0.9.1+cu111
+torchvision==0.9.1
 tornado==6.1
 tqdm==4.61.0
 traitlets==5.0.5
