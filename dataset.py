@@ -6,6 +6,7 @@ import os
 import json
 
 TRAIN_PATH = "./data/train"
+UNANSWERABLE = "unanswerable\n"
 
 def path_join(*args):
     return os.path.join(*args).replace('\\', '/') 
@@ -32,7 +33,7 @@ class TDMSDataset(Dataset):
     def _read(self, idx):
         tex, jsn = None, None
         try:
-            i, tex_path, jsn_path = all_paths[idx]
+            i, tex_path, jsn_path = self.all_paths[idx]
         except Exception as ex:
             print(i)
             raise ex
@@ -52,5 +53,38 @@ class TDMSDataset(Dataset):
         except:
             return i, tex, jsn
     
-    def get_trainloader(self):
-        return DataLoader(transformed_dataset, batch_size=32, shuffle=True)
+    
+class BinaryTDMSDataset(Dataset):
+    def __init__(self, path):
+        self.path = path
+        self.all_paths = [(p, find("tex", TRAIN_PATH, p), find("json", TRAIN_PATH, p)) for p in os.listdir(TRAIN_PATH)]
+    
+    def __len__(self):
+        return len(self.all_paths)
+
+    def __getitem__(self, idx):
+        return self._read(idx)
+
+    def _read(self, idx):
+        tex, jsn = None, None
+        try:
+            i, tex_path, jsn_path = self.all_paths[idx]
+        except Exception as ex:
+            print(i)
+            raise ex
+        try:
+            with open(tex_path) as f:
+                tex = f.read()
+
+            try:
+                with open(jsn_path) as f:
+                    jsn = json.load(f)
+                    print("loaded json")
+            except:
+                with open(jsn_path) as f:
+                    jsn = f.read()
+                    jsn = eval(jsn)
+            return i, tex, jsn != UNANSWERABLE
+        except:
+            return i, tex, jsn != UNANSWERABLE
+    
