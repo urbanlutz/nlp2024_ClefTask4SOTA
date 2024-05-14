@@ -22,7 +22,7 @@ def find(extension, *args):
 class TDMSDataset(Dataset):
     def __init__(self, path):
         self.path = path
-        self.all_paths = [(p, find("tex", TRAIN_PATH, p), find("json", TRAIN_PATH, p)) for p in os.listdir(TRAIN_PATH)]
+        self.all_paths = [(p, find("tex", path, p), find("json", path, p)) for p in os.listdir(path)]
     
     def __len__(self):
         return len(self.all_paths)
@@ -57,7 +57,7 @@ class TDMSDataset(Dataset):
 class BinaryTDMSDataset(Dataset):
     def __init__(self, path):
         self.path = path
-        self.all_paths = [(p, find("tex", TRAIN_PATH, p), find("json", TRAIN_PATH, p)) for p in os.listdir(TRAIN_PATH)]
+        self.all_paths = [(p, find("tex", path, p), find("json", path, p)) for p in os.listdir(path)]
     
     def __len__(self):
         return len(self.all_paths)
