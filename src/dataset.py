@@ -1,7 +1,5 @@
 from torch.utils.data import Dataset, DataLoader
 
-from enum import Enum
-import glob
 import os
 import json
 
@@ -11,6 +9,13 @@ class PATH:
     TEST = "./data/test2-zero-shot-papers"
 
 UNANSWERABLE = "unanswerable\n"
+
+
+def write_annotation_file(run, f, annotation):
+    filename = f"results/{run}/{f}/annotations.json"
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    with open(filename, "w") as f:
+        f.write(annotation)
 
 def path_join(*args):
     return os.path.join(*args).replace('\\', '/') 
@@ -73,32 +78,26 @@ class BinaryTDMSDataset(Dataset):
         tex, jsn = None, None
         try:
             i, tex_path, jsn_path = self.all_paths[idx]
-        except Exception as ex:
-            # Index not found
+        except Exception as ex: # Index not found
             print(i)
             raise ex
         
         try:
             with open(tex_path) as f:
                 tex = f.read()
-        except:
-            # tex not read
+        except: # tex not read
             pass
         
         if jsn_path:
-            # try:
-            #     with open(jsn_path) as f:
-            #         jsn = json.load(f)
-            #         print("loaded json")
-            # except:
             with open(jsn_path) as f:
                 jsn = f.read()
                 try:
                     jsn = eval(jsn)
                 except:
-                    pass #unanswerable, not a dict
+                    pass #"unanswerable" is not a dict, no eval possible/necessary
         has_tdms = jsn != UNANSWERABLE if jsn is not None else None
         return i, tex, has_tdms
     
     def get_dataloader(self):
         pass
+
