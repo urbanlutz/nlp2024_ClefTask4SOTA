@@ -70,8 +70,8 @@ def _read_files(i, tex_path, jsn_path):
                 jsn = eval(jsn)
             except:
                 pass #"unanswerable" is not a dict, no eval possible/necessary
-    has_tdms = jsn != UNANSWERABLE if jsn is not None else None
-    return i, tex, has_tdms
+    
+    return i, tex, jsn
 
 class TDMSDataset(Dataset):
     def __init__(self, path):
@@ -95,7 +95,9 @@ class BinaryTDMSDataset(Dataset):
 
     def __getitem__(self, idx):
         i, tex_path, jsn_path = self.all_paths[idx]
-        return _read_files(i, tex_path, jsn_path)
+        i, t, j =  _read_files(i, tex_path, jsn_path)
+        has_tdms = j != UNANSWERABLE if j is not None else None
+        return i, t, has_tdms
     
     def get_dataloader(self):
         pass
