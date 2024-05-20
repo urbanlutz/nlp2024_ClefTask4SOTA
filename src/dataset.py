@@ -2,7 +2,7 @@ from torch.utils.data import Dataset, DataLoader
 
 import os
 import json
-
+import pandas as pd
 class PATH:
     TRAIN = "./data/train"
     VAL = "./data/validation"
@@ -11,11 +11,37 @@ class PATH:
 UNANSWERABLE = "unanswerable\n"
 
 
-def write_annotation_file(run, f, annotation):
-    filename = f"results/{run}/{f}/annotations.json"
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
-    with open(filename, "w") as f:
-        f.write(str(annotation))
+class LogResult:
+    def __init__(self, run, save_interval=10, do_write = True):
+        self.run = run
+        self.results = []
+        self.save_interval = save_interval
+        self.do_write = do_write
+
+    def log(self, f, annotation):
+        
+        self.results.append((self.run, f, annotation))
+        if self.do_write:
+            self._write_annotation_file(self.run, f, annotation)
+            if len(self.results) % self.save_interval == 0:
+                _ = self._write_feather()
+
+    def _write_annotation_file(self, run, f, annotation):
+        filename = f"results/{self.run}/{f}/annotations.json"
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, "w") as f:
+            f.write(str(annotation))
+
+    def _write_feather(self):
+        df = pd.DataFrame(self.results)
+        df.columns = ["run", "f", "annotation"]
+        if self.do_write:
+            df.to_feather(f"results/{self.run}/df.feather")
+        return df
+
+    def save(self):
+        return self._write_feather()
+
 
 def path_join(*args):
     return os.path.join(*args).replace('\\', '/') 
@@ -28,6 +54,25 @@ def find(extension, *args):
     else:
         return None
 
+def _read_files(i, tex_path, jsn_path):
+    tex, jsn = None, None
+
+    try:
+        with open(tex_path) as f:
+            tex = f.read()
+    except: # tex not read
+        pass
+    
+    if jsn_path:
+        with open(jsn_path) as f:
+            jsn = f.read()
+            try:
+                jsn = eval(jsn)
+            except:
+                pass #"unanswerable" is not a dict, no eval possible/necessary
+    has_tdms = jsn != UNANSWERABLE if jsn is not None else None
+    return i, tex, has_tdms
+
 class TDMSDataset(Dataset):
     def __init__(self, path):
         self.path = path
@@ -37,31 +82,8 @@ class TDMSDataset(Dataset):
         return len(self.all_paths)
 
     def __getitem__(self, idx):
-        return self._read(idx)
-
-    def _read(self, idx):
-        tex, jsn = None, None
-        try:
-            i, tex_path, jsn_path = self.all_paths[idx]
-        except Exception as ex:
-            print(i)
-            raise ex
-        try:
-            with open(tex_path) as f:
-                tex = f.read()
-
-            try:
-                with open(jsn_path) as f:
-                    jsn = json.load(f)
-                    print("loaded json")
-            except:
-                with open(jsn_path) as f:
-                    jsn = f.read()
-                    jsn = eval(jsn)
-            return i, tex, jsn
-        except:
-            return i, tex, jsn
-    
+        i, tex_path, jsn_path = self.all_paths[idx]
+        return _read_files(i, tex_path, jsn_path)
     
 class BinaryTDMSDataset(Dataset):
     def __init__(self, path):
@@ -72,31 +94,8 @@ class BinaryTDMSDataset(Dataset):
         return len(self.all_paths)
 
     def __getitem__(self, idx):
-        return self._read(idx)
-
-    def _read(self, idx):
-        tex, jsn = None, None
-        try:
-            i, tex_path, jsn_path = self.all_paths[idx]
-        except Exception as ex: # Index not found
-            print(i)
-            raise ex
-        
-        try:
-            with open(tex_path) as f:
-                tex = f.read()
-        except: # tex not read
-            pass
-        
-        if jsn_path:
-            with open(jsn_path) as f:
-                jsn = f.read()
-                try:
-                    jsn = eval(jsn)
-                except:
-                    pass #"unanswerable" is not a dict, no eval possible/necessary
-        has_tdms = jsn != UNANSWERABLE if jsn is not None else None
-        return i, tex, has_tdms
+        i, tex_path, jsn_path = self.all_paths[idx]
+        return _read_files(i, tex_path, jsn_path)
     
     def get_dataloader(self):
         pass
