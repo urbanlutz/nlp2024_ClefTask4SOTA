@@ -15,7 +15,7 @@ def write_annotation_file(run, f, annotation):
     filename = f"results/{run}/{f}/annotations.json"
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with open(filename, "w") as f:
-        f.write(annotation)
+        f.write(str(annotation))
 
 def path_join(*args):
     return os.path.join(*args).replace('\\', '/') 
