@@ -1,7 +1,6 @@
 from torch.utils.data import Dataset, DataLoader
 
 import os
-import json
 import pandas as pd
 class PATH:
     TRAIN = "./data/train"
@@ -64,7 +63,7 @@ def _read_files(i, tex_path, jsn_path):
         pass
     
     if jsn_path:
-        with open(jsn_path) as f:
+        with open(jsn_path, encoding="utf-8") as f:
             jsn = f.read()
             try:
                 jsn = eval(jsn)
