@@ -7,33 +7,38 @@ class PATH:
     VAL = "./data/validation"
     TEST = "./data/test2-zero-shot-papers"
 
+    def get_name(path):
+        return {v:k for k, v in PATH.__dict__.items()}[path]
+
 UNANSWERABLE = "unanswerable\n"
 
 
 class LogResult:
-    def __init__(self, run, save_interval=10, do_write = True):
+    def __init__(self, run, save_interval=10, do_write = True, additional_col_names=[]):
         self.run = run
         self.results = []
         self.save_interval = save_interval
         self.do_write = do_write
+        self.additional_col_names = additional_col_names
 
-    def log(self, f, annotation):
+    def log(self, f, annotation, *args):
         
-        self.results.append((self.run, f, annotation))
+        self.results.append((self.run, f, annotation, *args))
         if self.do_write:
-            self._write_annotation_file(self.run, f, annotation)
+            self._write_annotation_file(f, annotation)
             if len(self.results) % self.save_interval == 0:
                 _ = self._write_feather()
 
-    def _write_annotation_file(self, run, f, annotation):
+    def _write_annotation_file(self, f, annotation):
         filename = f"results/{self.run}/{f}/annotations.json"
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         with open(filename, "w") as f:
             f.write(str(annotation))
 
     def _write_feather(self):
+        standard_col_names = ["run", "f", "annontation"]
         df = pd.DataFrame(self.results)
-        df.columns = ["run", "f", "annotation"]
+        df = df.rename({i: c for i, c in enumerate([*standard_col_names, *self.additional_col_names])}, axis=1)
         if self.do_write:
             df.to_feather(f"results/{self.run}/df.feather")
         return df
