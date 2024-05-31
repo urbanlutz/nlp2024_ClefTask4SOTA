@@ -1,17 +1,13 @@
-
-import tqdm
-from tqdm import tqdm
-from src.dataset import TDMSDataset, PATH,LogResult
 from datetime import datetime
-
-
 from typing import Callable
-
+from tqdm import tqdm
+from src.dataset import TDMSDataset, PATH, LogResult
 
 def run(
-        extract_fn: Callable[[str], str], 
-        data_path: PATH, 
-        run_name:str
+        extract_fn: Callable[[str], str],
+        data_path: PATH,
+        run_name:str,
+        max_iter = None
         ):
     """
     extract_fn: A function passing the text to a language model, augmented by a prompt, to extract TDMS quadruples
@@ -23,11 +19,13 @@ def run(
 
 
     dataset = TDMSDataset(data_path)
+    if max_iter:
+        dataset.all_paths = dataset.all_paths[:max_iter]
     logger = LogResult(run_id, do_write=True, additional_col_names=["ground_truth"])
 
     indexes = len(dataset)
     for i in tqdm(range(indexes)):
-        f, tex, ground_truth = dataset.__getitem__(i)
+        f, tex, ground_truth = dataset[i]
         model_output = extract_fn(tex)
 
         logger.log(f, str(model_output), str(ground_truth))
