@@ -1,9 +1,4 @@
-import json
 
-from src.dataset import UNANSWERABLE
-
-
-# prompt template
 def extract_tdms_initial(tex, few_shot=True):
     if few_shot:
         return f"""If the text reports benchmark leaderboard results, extract the reported Tasks, Datasets, Metrics and corresponding Scores.
