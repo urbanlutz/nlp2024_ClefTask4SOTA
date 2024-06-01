@@ -1,4 +1,4 @@
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 
 import os
 import pandas as pd
@@ -36,7 +36,7 @@ class LogResult:
             f.write(str(annotation))
 
     def _write_feather(self):
-        standard_col_names = ["run", "f", "annontation"]
+        standard_col_names = ["run", "f", "annotation"]
         df = pd.DataFrame(self.results)
         df = df.rename({i: c for i, c in enumerate([*standard_col_names, *self.additional_col_names])}, axis=1)
         if self.do_write:
