@@ -13,7 +13,7 @@ class OllamaModel(Model):
         try:
             res = ollama.generate(model=self.model, prompt=prompt, options={"temperature": 0})
             res = res["response"]
-            res = "[" + res.split("[", 1)[0].rsplit("]", 1)[-1] + "]"
+            res = "[" + res.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
             return res
         except Exception as ex:
             print(ex)
