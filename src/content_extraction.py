@@ -1,4 +1,5 @@
 import re
+import json
 
 def _find_sections(tex):
     p = re.compile("\\\\section\\{(.+?)\\}(.*?)(?=\\\\section|$)", re.DOTALL)
@@ -43,3 +44,39 @@ def naive_doctaet(tex):
         *[(k, v) for k, v in _find_sections(tex) if "experiment" in k.lower() or "result" in k.lower()]
     ]
     return '\n'.join([f"{name}\n{text}" for name, text in elements])
+
+
+
+def _convert_tdms_to_tuple(model_output_parsed):
+    tuples = []
+    for item in model_output_parsed:
+        try:
+            t = ((item["Task"], item["Dataset"],item["Metric"],item["Score"]))
+            tuples.append(t)
+        except:
+            # parse error, ignore instance
+            pass
+    return tuples
+
+def _format_tdms(tuples):
+    """make unique, format as string"""
+    unique = set(tuples)
+    dicts = [{"LEADERBOARD": {
+        "Task": t,
+        "Dataset":d,
+        "Metric":m,
+        "Score":s
+    }} for t,d,m,s in unique]
+    return str(dicts)
+
+
+def parse_response(response):
+    try:
+        response = response.replace("\\", "")
+        response = "[" + response.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
+        response = json.loads(response)
+        response = _convert_tdms_to_tuple(response)
+        return _format_tdms(response)
+    except Exception as ex:
+        print(ex)
+        return str(response)
