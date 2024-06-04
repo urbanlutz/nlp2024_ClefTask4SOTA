@@ -30,7 +30,7 @@ class Model:
 
     def parse_response(self, response):
         try:
-            response = "[" + res.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
+            response = "[" + response.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
             response = json.loads(response)
             response = _convert_tdms_to_tuple(response)
             return _format_tdms(response)
