@@ -1,6 +1,6 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
 import ollama
-
+import json
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 def _convert_tdms_to_tuple(model_output_parsed):
     tuples = []
