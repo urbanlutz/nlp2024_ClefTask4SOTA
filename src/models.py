@@ -39,9 +39,11 @@ class Model:
 
 class OllamaModel(Model):
     def __init__(self, model):
+        super().__init__()
         self.model = model
     
     def generate(self, prompt: str) -> str:
+        res = None
         try:
             res = ollama.generate(model=self.model, prompt=prompt, options={"temperature": 0})
             res = res["response"]
@@ -50,9 +52,11 @@ class OllamaModel(Model):
         except Exception as ex:
             print(ex)
             return f"ollama error: {ex}"
+            return res
         
 class HFModel(Model):
     def __init__(self, model):
+        super().__init__()
         self.model_id = model
         self.model = AutoModelForCausalLM.from_pretrained(model)
         self.tokenizer = AutoTokenizer.from_pretrained(model)
