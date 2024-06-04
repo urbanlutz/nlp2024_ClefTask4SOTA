@@ -1,5 +1,6 @@
 import re
 import json
+from src.dataset import UNANSWERABLE
 
 def _find_sections(tex):
     p = re.compile("\\\\section\\{(.+?)\\}(.*?)(?=\\\\section|$)", re.DOTALL)
@@ -67,7 +68,10 @@ def _format_tdms(tuples):
         "Metric":m,
         "Score":s
     }} for t,d,m,s in unique]
-    return str(dicts)
+    if dicts:
+        return str(dicts)
+    else:
+        return UNANSWERABLE
 
 
 def parse_response(response):
