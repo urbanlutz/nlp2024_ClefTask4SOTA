@@ -31,10 +31,6 @@ def run(
         data_path: PATH,
         max_iter = None
         ):
-    """
-    extract_fn: A function passing the text to a language model, augmented by a prompt, to extract TDMS quadruples
-    run_name: Information about the run, model name, experiment setup etc
-    """
     # define run name
     now_str = datetime.now().strftime('%Y%m%d-%H%M%S')
     run_id = f"{PATH.get_name(data_path)}_{experiment.name}-{now_str}"

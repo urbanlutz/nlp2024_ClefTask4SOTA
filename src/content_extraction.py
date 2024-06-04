@@ -40,6 +40,6 @@ def naive_doctaet(tex):
         *_find_unclosed(tex, "title"),
         *_find_begin_end(tex, "abstract"),
         *_find_begin_end(tex, "table"),
-        *[(k, v) for k, v in _find_sections(tex) if "Experiment" in k or "Result" in k]
+        *[(k, v) for k, v in _find_sections(tex) if "experiment" in k.lower() or "result" in k.lower()]
     ]
     return '\n'.join([f"{name}\n{text}" for name, text in elements])

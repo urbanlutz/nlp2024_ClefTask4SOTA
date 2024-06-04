@@ -5,14 +5,16 @@ class Model:
     def generate(self, prompt: str)-> str:
         pass
 
-class LLama(Model):
+class OllamaModel(Model):
     def __init__(self, model):
         self.model = model
     
     def generate(self, prompt: str) -> str:
         try:
             res = ollama.generate(model=self.model, prompt=prompt, options={"temperature": 0})
-            return res["response"]
+            res = res["response"]
+            res = "[" + res.split("[", 1)[0].rsplit("]", 1)[-1] + "]"
+            return res
         except Exception as ex:
             print(ex)
             return f"ollama error: {ex}"
