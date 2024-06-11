@@ -8,7 +8,7 @@ class Model:
         self.ctx_len = 8192
         self.model_id = model
         self.__name__ = ''.join([c for c in model if c.isalnum()])
-        self.model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.bfloat16, device_map="auto", low_cpu_mem_usage=True)
+        self.model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.bfloat16, device_map="auto")
         self.tokenizer = AutoTokenizer.from_pretrained(model)
         self.device = f"cuda:{gpu_num}"
         self.model = self.model.to(self.device)
@@ -38,6 +38,8 @@ class Model:
             pad_token_id=self.tokenizer.eos_token_id,
             do_sample=False
         )
+        inputs = inputs.to("cpu")
+        del inputs
         decoded_response = self.tokenizer.decode(response[0][prompt_length:], skip_special_tokens=True)
         return decoded_response
     
