@@ -21,12 +21,11 @@ class Experiment:
             model: Model,
             prompt_template: Callable[[str], str],
             extract: Callable[[Model, Callable[[str], str], str], str],
-            name: str,
             post_proc = None
             ):
         self.model = model
         self.extract = extract
-        self.name = name
+        self.name = f"{extract.__name__}-{prompt_template.__name__}-{model.__name__}"
         self.prompt_template = prompt_template
         self.post_proc = post_proc
     

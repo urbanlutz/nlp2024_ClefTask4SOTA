@@ -3,11 +3,12 @@ import torch
 import ollama
 
         
-class HFModel:
+class Model:
     def __init__(self, model, gpu_num=0):
     
         self.ctx_len = 8192
         self.model_id = model
+        self.__name__ = str([c for c in model if c.isalnum()])
         self.model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.float16)
         self.tokenizer = AutoTokenizer.from_pretrained(model)
         self.device = f"cuda:{gpu_num}"
