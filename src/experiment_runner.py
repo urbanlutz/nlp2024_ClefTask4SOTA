@@ -10,7 +10,6 @@ def free_cuda_memory():
     torch.cuda.empty_cache()
     gc.collect()
 
-
 class Experiment:
     """
     model: A Model from src.models
@@ -22,15 +21,23 @@ class Experiment:
             model: Model,
             prompt_template: Callable[[str], str],
             extract: Callable[[Model, Callable[[str], str], str], str],
-            name: str
+            name: str,
+            post_proc = None
             ):
         self.model = model
         self.extract = extract
         self.name = name
         self.prompt_template = prompt_template
+        self.post_proc = post_proc
     
     def __call__(self, sample: str) -> str:
-        return self.extract(self.model, self.prompt_template, sample)
+        extracted_text = self.extract(sample)
+        truncated = self.model.cut_text(extracted_text, self.model.num_tokens(self.prompt_template("")))
+        prompt = self.prompt_template(truncated)
+        response = self.model.generate(prompt)
+        if self.post_proc:
+            response = self.post_proc(response)
+        return response
 
 
 def run(
