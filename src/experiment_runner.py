@@ -3,6 +3,13 @@ from typing import Callable
 from tqdm import tqdm
 from src.dataset import TDMSDataset, PATH, LogResult
 from src.models import Model
+import torch
+import gc
+
+def free_cuda_memory():
+    torch.cuda.empty_cache()
+    gc.collect()
+
 
 class Experiment:
     """
@@ -48,6 +55,7 @@ def run(
 
         logger.log(f, str(model_output), str(ground_truth))
     df = logger.save()
+    free_cuda_memory()
     return df
 
 

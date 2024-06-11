@@ -24,6 +24,7 @@ class OllamaModel(Model):
 class HFModel(Model):
     def __init__(self, model, gpu_num=0):
         super().__init__()
+        self.ctx_len = 8192
         self.model_id = model
         self.model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.float16)
         self.tokenizer = AutoTokenizer.from_pretrained(model)
@@ -35,13 +36,15 @@ class HFModel(Model):
     
     def cut_text(self, text, num_tokens):
         tokens = self.tokenizer(text)["input_ids"]
-        tokens = tokens[:num_tokens]
+        tokens = tokens[:self.ctx_len - num_tokens]
         return self.tokenizer.decode(tokens, skip_special_tokens=True)
     
     def generate(self, prompt: str)-> str:
         inputs = self.tokenizer(prompt, return_tensors="pt")
         inputs = inputs.to(self.device)
         prompt_length = inputs['input_ids'].shape[1]
+        if prompt_length > self.ctx_len:
+            print(f"Context lenght exceeded! {prompt_length}")
         response = self.model.generate(**inputs, max_length= 10000, pad_token_id=self.tokenizer.eos_token_id)
         return self.tokenizer.decode(response[0][prompt_length:], skip_special_tokens=True)
     

@@ -83,4 +83,5 @@ def parse_response(response):
         return _format_tdms(response)
     except Exception as ex:
         print(ex)
+        print(str(response))
         return str(response)
