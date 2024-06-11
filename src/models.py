@@ -8,7 +8,7 @@ class Model:
         self.ctx_len = 8192
         self.model_id = model
         self.__name__ = ''.join([c for c in model if c.isalnum()])
-        self.model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.float16)
+        self.model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.bfloat16)
         self.tokenizer = AutoTokenizer.from_pretrained(model)
         self.device = f"cuda:{gpu_num}"
         self.model = self.model.to(self.device)
