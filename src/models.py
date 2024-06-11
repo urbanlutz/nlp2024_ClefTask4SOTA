@@ -10,7 +10,7 @@ class Model:
         self.__name__ = ''.join([c for c in model if c.isalnum()])
         self.model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.bfloat16, device_map="auto")
         self.tokenizer = AutoTokenizer.from_pretrained(model)
-        # self.device = f"cuda:{gpu_num}"
+        self.device = "cuda"
         # self.model = self.model.to(self.device)
     
     def num_tokens(self, text):
