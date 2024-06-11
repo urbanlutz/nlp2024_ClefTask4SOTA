@@ -1,10 +1,37 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
+import ollama
 
+class OllamaModel:
+    def __init__(self, model):
+        self.ctx_len = 8192
+        self.model = model
+        self.__name__ = ''.join([c for c in model if c.isalnum()])
+        self.tokenizer = self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B")
+
+    def generate(self, prompt: str) -> str:
+        prompt_length = len(self.tokenizer(prompt)["input_ids"])
+        if prompt_length >= self.ctx_len:
+            print(f"Context lenght exceeded! {prompt_length}")
+        res = None
+        try:
+            res = ollama.generate(model=self.model, prompt=prompt, options={"temperature": 0})
+            res = res["response"]
+            return res
+        except Exception as ex:
+            print(ex)
+            return f"ollama error: {ex}"
+        
+    def num_tokens(self, text):
+        return len(self.tokenizer(text)["input_ids"])
+    
+    def cut_text(self, text, num_tokens):
+        tokens = self.tokenizer(text)["input_ids"]
+        tokens = tokens[:self.ctx_len - num_tokens]
+        return self.tokenizer.decode(tokens, skip_special_tokens=True)
         
 class Model:
     def __init__(self, model, gpu_num=0):
-    
         self.ctx_len = 8192
         self.model_id = model
         self.__name__ = ''.join([c for c in model if c.isalnum()])
@@ -28,7 +55,7 @@ class Model:
 
         # check context lenght is not exceeded
         prompt_length = inputs['input_ids'].shape[1]
-        if prompt_length > self.ctx_len:
+        if prompt_length >= self.ctx_len:
             print(f"Context lenght exceeded! {prompt_length}")
 
         # generate
