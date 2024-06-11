@@ -8,16 +8,16 @@ def extract_tdms_initial(tex, few_shot=True):
         Return the tasks, datasets, metrics and scores as reported in the text in a JSON array. Do not include precision information in the reported score.
         Here the formating structure of the JSON. Please use exactly this formating in your answer.
         [
-            {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
-            {{"Task": "example Task 1", "Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
+            {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": "example metric 1", "Score": "score"}}, 
+            {{"Task": "example Task 1", "Dataset": "example Dataset 2", "Metric": "example metric 2", "Score": "score"}}
         ]
         
         Lets make an example for you: Template-Based Automatic Search of Compact Semantic Segmentation Architectures... One discovered architecture achieves 63.2% mean IoU on CamVid and 67.8% on CityScapes having only 270K parameters... evaluation.
         
         The expected answer of you is:
         [
-            {{"Task": "Compact Sementic Segmentation", "Dataset": "CamVid", "Metric": Mean IoU", "Score": "63.2"}}, 
-            {{"Task": "Compact Sementic Segmentation", "Dataset": "CityScapes", "Metric": Mean IoU", "Score": "67.8"}}
+            {{"Task": "Compact Sementic Segmentation", "Dataset": "CamVid", "Metric": "Mean IoU", "Score": "63.2"}}, 
+            {{"Task": "Compact Sementic Segmentation", "Dataset": "CityScapes", "Metric": "Mean IoU", "Score": "67.8"}}
         ]
         
         """
@@ -29,8 +29,8 @@ def extract_tdms_initial(tex, few_shot=True):
         Return the tasks, datasets, metrics and scores as reported in the text in a JSON array. Do not include precision information in the reported score.
         Here the formating structure of the JSON. Please use exactly this formating in your answer.
         [
-            {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
-            {{"Task": "example Task 1", "Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
+            {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": "example metric 1", "Score": "score"}}, 
+            {{"Task": "example Task 1", "Dataset": "example Dataset 2", "Metric": "example metric 2", "Score": "score"}}
         ]
         
         """
