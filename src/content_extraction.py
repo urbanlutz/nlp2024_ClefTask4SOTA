@@ -52,6 +52,35 @@ def empty_to_unanswerable(text):
     else:
         return text
 
+import re
+
+from src.dataset import UNANSWERABLE
+
+def fish_json(text):
+    return "[" + text.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
+
+def remove_newline_tab(text):
+    text = re.sub("\n|\t", "", text)
+    text = re.sub(" +", " ", text)
+    return text
+
+def replace_quotes(text):
+    return text.replace('"', "'")
+
+import json
+
+def format(text):
+    if text == UNANSWERABLE or text == UNANSWERABLE.rstrip("\n"):
+        return text
+    text = fish_json(text)
+
+    # try to parse it, otherwise make a pseudo correct structure
+    try:
+        text = str(json.loads(text))
+    except:
+        text = remove_newline_tab(text)
+        text = replace_quotes(text)
+    return text
 def _convert_tdms_to_tuple(model_output_parsed):
     tuples = []
     for item in model_output_parsed:

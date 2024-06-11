@@ -1,13 +1,26 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from collections import namedtuple
 import torch
 import ollama
 
+ModelId = namedtuple("ModelId", "hf ollama")
+
+class ARCHITECTURE:
+    MISTRAL = ModelId("mistralai/Mistral-7B-v0.3","mistral:7b")
+    MISTRAL_IT = ModelId("mistralai/Mistral-7B-Instruct-v0.3", "None")
+    GEMMA = ModelId("google/gemma-7b", "gemma:7b")
+    GEMMA_IT = ModelId("google/gemma-7b-it", "None")
+    LLAMA_8b = ModelId("meta-llama/Meta-Llama-3-8B", "llama3:8b")
+    LLAMA_70b = ModelId("meta-llama/Meta-Llama-3-70B", "llama3:70b")
+
+    
+
 class OllamaModel:
-    def __init__(self, model):
+    def __init__(self, model:ModelId):
         self.ctx_len = 8192
-        self.model = model
-        self.__name__ = ''.join([c for c in model if c.isalnum()])
-        self.tokenizer = self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3-8B")
+        self.model_id = model
+        self.__name__ = ''.join([c for c in model.ollama if c.isalnum()])
+        self.tokenizer = self.tokenizer = AutoTokenizer.from_pretrained(model.hf)
 
     def generate(self, prompt: str) -> str:
         prompt_length = len(self.tokenizer(prompt)["input_ids"])
@@ -15,7 +28,7 @@ class OllamaModel:
             print(f"Context lenght exceeded! {prompt_length}")
         res = None
         try:
-            res = ollama.generate(model=self.model, prompt=prompt, options={"temperature": 0})
+            res = ollama.generate(model=self.model_id.ollama, prompt=prompt, options={"temperature": 0})
             res = res["response"]
             return res
         except Exception as ex:
@@ -27,16 +40,16 @@ class OllamaModel:
     
     def cut_text(self, text, num_tokens):
         tokens = self.tokenizer(text)["input_ids"]
-        tokens = tokens[:self.ctx_len - num_tokens]
+        tokens = tokens[:self.ctx_len - num_tokens -1]
         return self.tokenizer.decode(tokens, skip_special_tokens=True)
         
 class Model:
-    def __init__(self, model, gpu_num=0):
+    def __init__(self, model:ModelId, gpu_num=0):
         self.ctx_len = 8192
         self.model_id = model
-        self.__name__ = ''.join([c for c in model if c.isalnum()])
-        self.model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.bfloat16, device_map="auto")
-        self.tokenizer = AutoTokenizer.from_pretrained(model)
+        self.__name__ = ''.join([c for c in model.hf if c.isalnum()])
+        self.model = AutoModelForCausalLM.from_pretrained(model.hf, torch_dtype=torch.bfloat16, device_map="auto")
+        self.tokenizer = AutoTokenizer.from_pretrained(model.hf)
         self.device = "cuda"
         # self.model = self.model.to(self.device)
     
