@@ -46,7 +46,11 @@ def naive_doctaet(tex):
     ]
     return '\n'.join([f"{name}\n{text}" for name, text in elements])
 
-
+def empty_to_unanswerable(text):
+    if len(text) < 10:
+        return UNANSWERABLE
+    else:
+        return text
 
 def _convert_tdms_to_tuple(model_output_parsed):
     tuples = []
