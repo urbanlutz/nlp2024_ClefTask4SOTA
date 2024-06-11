@@ -46,6 +46,3 @@ class Model:
     def to(self, device):
         self.device = device
         self.model.to(device)
-
-    def __del__(self):
-        self.to("cpu")

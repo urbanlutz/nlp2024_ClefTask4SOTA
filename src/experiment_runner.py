@@ -37,6 +37,10 @@ class Experiment:
         if self.post_proc:
             response = self.post_proc(response)
         return response
+    
+    def __del__(self):
+        del self.model
+
 
 
 def run(
@@ -61,6 +65,7 @@ def run(
 
         logger.log(f, str(model_output), str(ground_truth))
     df = logger.save()
+    del experiment
     free_cuda_memory()
     return df
 
