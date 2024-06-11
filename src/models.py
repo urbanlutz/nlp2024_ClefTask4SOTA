@@ -10,8 +10,8 @@ class Model:
         self.__name__ = ''.join([c for c in model if c.isalnum()])
         self.model = AutoModelForCausalLM.from_pretrained(model, torch_dtype=torch.bfloat16, device_map="auto")
         self.tokenizer = AutoTokenizer.from_pretrained(model)
-        self.device = f"cuda:{gpu_num}"
-        self.model = self.model.to(self.device)
+        # self.device = f"cuda:{gpu_num}"
+        # self.model = self.model.to(self.device)
     
     def num_tokens(self, text):
         return len(self.tokenizer(text)["input_ids"])
@@ -24,7 +24,7 @@ class Model:
     def generate(self, prompt: str)-> str:
         # tokenize, move to gpu
         inputs = self.tokenizer(prompt, return_tensors="pt")
-        inputs = inputs.to(self.device)
+        # inputs = inputs.to(self.device)
 
         # check context lenght is not exceeded
         prompt_length = inputs['input_ids'].shape[1]
@@ -38,11 +38,11 @@ class Model:
             pad_token_id=self.tokenizer.eos_token_id,
             do_sample=False
         )
-        inputs = inputs.to("cpu")
-        del inputs
+        # inputs = inputs.to("cpu")
+        # del inputs
         decoded_response = self.tokenizer.decode(response[0][prompt_length:], skip_special_tokens=True)
         return decoded_response
     
-    def to(self, device):
-        self.device = device
-        self.model.to(device)
+    # def to(self, device):
+    #     self.device = device
+        # self.model.to(device)
