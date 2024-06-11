@@ -1,7 +1,7 @@
 def simple_zs(tex):
     return f"""If the text reports benchmark leaderboard results, extract the reported Tasks, Datasets, Metrics and corresponding Scores.
 Return the tasks, datasets, metrics and scores as reported in the text in a JSON array:
-[{{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}]
+[{{LEADERBOARD: {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}}}, {{LEADERBOARD: {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}}}]
 
 Text:
 {tex}
@@ -36,7 +36,7 @@ Text: table
 Provide the JSON Array only. Do not include precision information in the reported score.
 
 Entries:
-[{{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}]
+[{{LEADERBOARD: {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}}}]
 
 Text:
 {tex}
