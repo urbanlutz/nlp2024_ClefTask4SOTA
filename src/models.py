@@ -24,7 +24,7 @@ class Model:
     def generate(self, prompt: str)-> str:
         # tokenize, move to gpu
         inputs = self.tokenizer(prompt, return_tensors="pt")
-        # inputs = inputs.to(self.device)
+        inputs = inputs.to(self.device)
 
         # check context lenght is not exceeded
         prompt_length = inputs['input_ids'].shape[1]
