@@ -46,8 +46,14 @@ def naive_doctaet(tex):
     ]
     return '\n'.join([f"{name}\n{text}" for name, text in elements])
 
+def _information(text):
+    return len(re.sub(r'\{|\}|\[|\]|"|\'|:|,| |\n|leaderboard|task|dataset|metric|score|null|none', "", text.lower()))
+
+def _is_empty(text):
+    return _information(text) < 10
+
 def empty_to_unanswerable(text):
-    if len(text) < 10:
+    if len(text) < 10 or _is_empty(text):
         return UNANSWERABLE
     else:
         return text
@@ -63,8 +69,6 @@ def remove_newline_tab(text):
 def replace_quotes(text):
     return text.replace('"', "'")
 
-import re
-import json
 
 def _add_LB_regex(text):
     text = re.sub("\{", '{"LEADERBOARD":{', text)
@@ -96,7 +100,6 @@ def add_LEADERBOARD(text):
     finally:
         return text
     
-
 
 def format(text):
     text = empty_to_unanswerable(text)
