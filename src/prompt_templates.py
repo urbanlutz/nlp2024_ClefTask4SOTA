@@ -52,6 +52,54 @@ Provide the JSON Array only. Do not include precision information in the reporte
 
 Entries:
 """
+
+def simple_fs_v2(tex):
+    return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
+
+Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score.
+    
+The format is as follows:
+[
+    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
+    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
+]
+
+Heres an example:
+Text: 
+table
+[!tp]\\setlength{{\\tabcolsep}}{{0.5pt}}
+\\begin{{center}}
+    \\caption{{Performance comparison on Oulu-CASIA database in terms of average classification accuracy of the 10-fold cross-validation when evaluating on three different test sets, including ``weak expression", ``peak expression" and ``combined", respectively.}}
+    \\label{{table:oulu_compare}}
+    \\begin{{tabular}}{{c|c|c|c}}
+        \\hline\\noalign{{\\smallskip}}
+        Method & weak expression & peak expression & combined\\\\
+        \\hline
+        PPDN(standard SGD) &  67.05\\% & 82.91\\% &73.54\\%\\\\	
+        GoogLeNet (baseline) & 64.64\\%& 79.21\\% &71.32\\%\\\\
+        \\hline
+        PPDN  & \\textbf{{67.95\\%}}&\\textbf{{84.59\\%}} & \\textbf{{74.99\\%}}\\\\
+        \\hline
+    \\end{{tabular}}
+\\end{{center}}  and provide the JSON Array only.
+
+Provide a JSON Array of objects in the specified format above. If no entry is found, return an empty JSON Array.
+
+
+Entries:
+[
+    {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}
+]
+
+Text:
+{tex}
+
+Provide a JSON Array of objects in the specified format above. If no entry is found, return an empty JSON Array.
+
+Entries:
+"""
+
+
 def simple_fs_v3(tex):
     return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
 
