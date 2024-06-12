@@ -41,6 +41,8 @@ class Experiment:
     def __del__(self):
         del self.model
 
+    def __repr__(self):
+        return self.name
 
 
 def run(
