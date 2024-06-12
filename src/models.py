@@ -31,7 +31,7 @@ class OllamaModel:
             print(f"Context lenght exceeded! {prompt_length}")
         res = None
         try:
-            res = ollama.generate(model=self.model_id.ollama, prompt=prompt, options={"temperature": 0, "num_ctx":8192})
+            res = ollama.generate(model=self.model_id.ollama, prompt=prompt, options={"temperature": 0, "num_ctx":self.ctx_len})
             res = res["response"]
             return res
         except Exception as ex:
