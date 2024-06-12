@@ -130,6 +130,82 @@ Entries:
     {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}
 ]
 
+
+Text:
+{tex}
+
+Provide a JSON Array of objects in the following format:
+
+[
+    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
+    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
+]
+If no entry is found, return an empty JSON Array.
+
+Entries:
+"""
+def simple_fs_v4a(tex):
+    return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
+
+Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score. The Score should be a number.
+    
+
+Here's an example:
+Text: 
+[!tp]\\setlength{{\\tabcolsep}}{{0.5pt}}
+\\begin{{center}}
+    \\caption{{Performance comparison on Oulu-CASIA database in terms of average classification accuracy of the 10-fold cross-validation when evaluating on three different test sets, including ``weak expression", ``peak expression" and ``combined", respectively.}}
+    \\label{{table:oulu_compare}}
+    \\begin{{tabular}}{{c|c|c|c}}
+        \\hline\\noalign{{\\smallskip}}
+        Method & weak expression & peak expression & combined\\\\
+        \\hline
+        PPDN(standard SGD) &  67.05\\% & 82.91\\% &73.54\\%\\\\	
+        GoogLeNet (baseline) & 64.64\\%& 79.21\\% &71.32\\%\\\\
+        \\hline
+        PPDN  & \\textbf{{67.95\\%}}&\\textbf{{84.59\\%}} & \\textbf{{74.99\\%}}\\\\
+        \\hline
+    \\end{{tabular}}
+\\end{{center}}  and provide the JSON Array only.
+
+Entries:
+[
+    {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}
+]
+
+Extract these leaderboard entries:
+
+Text:
+{tex}
+
+Provide a JSON Array of objects in the following format:
+
+[
+    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
+    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
+]
+If no entry is found, return an empty JSON Array.
+
+Entries:
+"""
+def simple_fs_v4b(tex):
+    return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
+
+Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score. The Score should be a number.
+    
+
+Heres an example:
+Text:
+Template-Based Automatic Search of Compact Semantic Segmentation Architectures... One discovered architecture achieves 63.2% mean IoU on CamVid and 67.8% on CityScapes having only 270K parameters... evaluation.
+        
+Entries
+[
+    {{"Task": "Compact Sementic Segmentation", "Dataset": "CamVid", "Metric": "Mean IoU", "Score": "63.2"}}, 
+    {{"Task": "Compact Sementic Segmentation", "Dataset": "CityScapes", "Metric": "Mean IoU", "Score": "67.8"}}
+]
+
+Extract these leaderboard entries:
+
 Text:
 {tex}
 
