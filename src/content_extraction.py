@@ -71,7 +71,11 @@ def replace_quotes(text):
 
 
 def _add_LB_regex(text):
-    text = re.sub(r"\{", '{["|\']LEADERBOARD["|\']:{', text)
+    if '"' in text:
+        lb = '{"LEADERBOARD":{'
+    else:
+        lb = "{'LEADERBOARD':{"
+    text = re.sub(r"\{", lb, text)
     text = re.sub(r"\}", "}}", text)
     return text
 
