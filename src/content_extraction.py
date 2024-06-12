@@ -63,6 +63,40 @@ def remove_newline_tab(text):
 def replace_quotes(text):
     return text.replace('"', "'")
 
+import re
+import json
+
+def _add_LB_regex(text):
+    text = re.sub("\{", '{"LEADERBOARD":{', text)
+    text = re.sub("\}", "}}", text)
+    return text
+
+def _remove_LB_regex(text):
+    text = re.sub('\{[ |\n|\t]*"LEADERBOARD":[ |\n|\t]*{', "{", text)
+    text = re.sub("\}[ |\n|\t]*\}", "}", text)
+    return text
+
+def _add_LB_json(text):
+    parsed = json.loads(text)
+    parsed = [{"LEADERBOARD": obj} for obj in parsed]
+    return json.dumps(parsed)
+
+def _remove_LB_json(text):
+    parsed = json.loads(text)
+    parsed = [d.get("LEADERBOARD", d) for d in parsed]
+    return json.dumps(parsed)
+
+def add_LEADERBOARD(text):
+    try:
+        text = _remove_LB_json(text)
+        text = _add_LB_json(text)
+    except:
+        text = _remove_LB_regex(text)
+        text = _add_LB_regex(text)
+    finally:
+        return text
+    
+
 
 def format(text):
     text = empty_to_unanswerable(text)
@@ -70,6 +104,7 @@ def format(text):
         return text
     text = fish_json(text)
 
+    text = add_LEADERBOARD(text)
     # try to parse it, otherwise make a pseudo correct structure
     try:
         text = str(json.loads(text))
