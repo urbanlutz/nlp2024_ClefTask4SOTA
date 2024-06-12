@@ -71,13 +71,13 @@ def replace_quotes(text):
 
 
 def _add_LB_regex(text):
-    text = re.sub("\{", '{["|\']LEADERBOARD["|\']:{', text)
-    text = re.sub("\}", "}}", text)
+    text = re.sub(r"\{", '{["|\']LEADERBOARD["|\']:{', text)
+    text = re.sub(r"\}", "}}", text)
     return text
 
 def _remove_LB_regex(text):
-    text = re.sub('\{[ |\n|\t]*["|\']LEADERBOARD["|\']:[ |\n|\t]*{', "{", text)
-    text = re.sub("\}[ |\n|\t]*\}", "}", text)
+    text = re.sub(r'\{[ |\n|\t]*["|\']LEADERBOARD["|\']:[ |\n|\t]*{', "{", text)
+    text = re.sub(r"\}[ |\n|\t]*\}", "}", text)
     return text
 
 def _add_LB_json(text):
