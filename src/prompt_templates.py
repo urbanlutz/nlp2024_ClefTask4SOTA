@@ -57,11 +57,6 @@ def simple_fs_v2(tex):
 
 Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score. The Score should be a number.
     
-The format is as follows:
-[
-    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
-    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
-]
 
 Heres an example:
 Text: 
@@ -82,9 +77,6 @@ table
     \\end{{tabular}}
 \\end{{center}}  and provide the JSON Array only.
 
-Provide a JSON Array of objects in the specified format above. If no entry is found, return an empty JSON Array.
-
-
 Entries:
 [
     {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}
@@ -93,7 +85,13 @@ Entries:
 Text:
 {tex}
 
-Provide a JSON Array of objects in the specified format above. If no entry is found, return an empty JSON Array.
+Provide a JSON Array of objects in the following format:
+
+[
+    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
+    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
+]
+If no entry is found, return an empty JSON Array.
 
 Entries:
 """

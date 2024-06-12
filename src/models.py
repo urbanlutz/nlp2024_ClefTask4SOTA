@@ -6,12 +6,15 @@ import ollama
 ModelId = namedtuple("ModelId", "hf ollama")
 
 class ARCHITECTURE:
-    MISTRAL = ModelId("mistralai/Mistral-7B-v0.3","mistral:7b")
-    MISTRAL_IT = ModelId("mistralai/Mistral-7B-Instruct-v0.3", "None")
-    GEMMA = ModelId("google/gemma-7b", "gemma:7b")
-    GEMMA_IT = ModelId("google/gemma-7b-it", "None")
+    MISTRAL_7b = ModelId("mistralai/Mistral-7B-v0.3","mistral:7b")
+    # MISTRAL_IT = ModelId("mistralai/Mistral-7B-Instruct-v0.3", "None")
+    GEMMA_7b = ModelId("google/gemma-7b", "gemma:7b")
+    GEMMA_2b = ModelId("google/gemma-2b", "gemma:2b")
+    # GEMMA_IT = ModelId("google/gemma-7b-it", "None")
     LLAMA_8b = ModelId("meta-llama/Meta-Llama-3-8B", "llama3:8b")
     LLAMA_70b = ModelId("meta-llama/Meta-Llama-3-70B", "llama3:70b")
+    MIXTRAL_22B = ModelId("mistralai/Mixtral-8x22B-v0.1", "mixtral:8x22b")
+    MIXTRAL_7B = ModelId("mistralai/Mixtral-8x7B-v0.1", "mixtral:8x7b")
 
 
 class OllamaModel:
