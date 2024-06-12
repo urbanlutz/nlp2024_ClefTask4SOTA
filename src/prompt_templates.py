@@ -53,14 +53,19 @@ Provide the JSON Array only. Do not include precision information in the reporte
 Entries:
 """
 def simple_fs_v2(tex):
-    return f"""If the text reports benchmark leaderboard results, extract the reported LEADERBOARD Objects with Tasks, Datasets, Metrics and corresponding Scores.
-Return the LEADERBOARD Object and tasks, datasets, metrics and scores as reported in the text in a JSON array:
+    return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
+
+Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score.
+    
+The format is as follows:
 [
-    {{LEADERBOARD: {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}}}, 
-    {{LEADERBOARD: {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}}}
+    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
+    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
 ]
+
 Heres an example:
-Text: table
+Text: 
+table
 [!tp]\\setlength{{\\tabcolsep}}{{0.5pt}}
 \\begin{{center}}
     \\caption{{Performance comparison on Oulu-CASIA database in terms of average classification accuracy of the 10-fold cross-validation when evaluating on three different test sets, including ``weak expression", ``peak expression" and ``combined", respectively.}}
@@ -77,17 +82,18 @@ Text: table
     \\end{{tabular}}
 \\end{{center}}  and provide the JSON Array only.
 
-Provide a JSON Array only. Do not include precision information in the reported score. If no entry is found, return an empty JSON Array [].
+Provide a JSON Array of objects in the specified format above. If no entry is found, return an empty JSON Array.
+
 
 Entries:
 [
-    {{LEADERBOARD: {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}}}
+    {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}
 ]
 
 Text:
 {tex}
 
-Provide the a Array only. Do not include precision information in the reported score. If no entry is found, return an empty JSON Array [].
+Provide a JSON Array of objects in the specified format above. If no entry is found, return an empty JSON Array.
 
 Entries:
 """
