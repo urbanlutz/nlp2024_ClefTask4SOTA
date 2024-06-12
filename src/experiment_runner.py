@@ -5,7 +5,7 @@ from src.dataset import TDMSDataset, PATH, LogResult
 from src.models import Model
 import torch
 import gc
-
+import time
 def free_cuda_memory():
     torch.cuda.empty_cache()
     gc.collect()
@@ -17,7 +17,7 @@ class Experiment:
     extract: a function taking a model, a prompt template and a tex file, defining how the model with the prompt tempalte gets applied to the tex file
     """
     def __init__(
-            self, 
+            self,
             model: Model,
             prompt_template: Callable[[str], str],
             extract: Callable[[Model, Callable[[str], str], str], str],
@@ -58,14 +58,20 @@ def run(
     dataset = TDMSDataset(data_path)
     if max_iter:
         dataset.all_paths = dataset.all_paths[:max_iter]
-    logger = LogResult(run_id, do_write=True, additional_col_names=["ground_truth"])
+        
+    logger = LogResult(run_id, save_interval=1, do_write=True, additional_col_names=["ground_truth", "inference_s"])
+
+    if not experiment.model.is_loaded:
+        experiment.model.load()
 
     indexes = len(dataset)
     for i in tqdm(range(indexes)):
         f, tex, ground_truth = dataset[i]
+        t_start = time.perf_counter()
         model_output = experiment(tex)
-
-        logger.log(f, str(model_output), str(ground_truth))
+        t_end = time.perf_counter()
+        elapsed_time = t_end- t_start
+        logger.log(f, str(model_output), str(ground_truth), elapsed_time)
     df = logger.save()
     del experiment
     free_cuda_memory()

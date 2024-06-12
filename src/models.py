@@ -13,7 +13,6 @@ class ARCHITECTURE:
     LLAMA_8b = ModelId("meta-llama/Meta-Llama-3-8B", "llama3:8b")
     LLAMA_70b = ModelId("meta-llama/Meta-Llama-3-70B", "llama3:70b")
 
-    
 
 class OllamaModel:
     def __init__(self, model:ModelId):
@@ -21,6 +20,10 @@ class OllamaModel:
         self.model_id = model
         self.__name__ = ''.join([c for c in model.ollama if c.isalnum()])
         self.tokenizer = self.tokenizer = AutoTokenizer.from_pretrained(model.hf)
+        self.is_loaded = True
+
+    def load(self): # ollama models are loaded on demand by ollama
+        pass
 
     def generate(self, prompt: str) -> str:
         prompt_length = len(self.tokenizer(prompt)["input_ids"])
@@ -46,13 +49,16 @@ class OllamaModel:
 class Model:
     def __init__(self, model:ModelId, gpu_num=0):
         self.ctx_len = 8192
-        self.model_id = model
+        self.model = model
         self.__name__ = ''.join([c for c in model.hf if c.isalnum()])
-        self.model = AutoModelForCausalLM.from_pretrained(model.hf, torch_dtype=torch.bfloat16, device_map="auto")
-        self.tokenizer = AutoTokenizer.from_pretrained(model.hf)
         self.device = "cuda"
-        # self.model = self.model.to(self.device)
+        self.is_loaded = False
     
+    def load(self):
+        if not self.is_loaded:
+            self.model = AutoModelForCausalLM.from_pretrained(self.model.hf, torch_dtype=torch.bfloat16, device_map="auto")
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model.hf)
+
     def num_tokens(self, text):
         return len(self.tokenizer(text)["input_ids"])
     
