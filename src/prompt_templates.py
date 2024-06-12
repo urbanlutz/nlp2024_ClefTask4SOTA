@@ -55,7 +55,7 @@ Entries:
 def simple_fs_v2(tex):
     return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
 
-Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score.
+Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score. The Score should be a number.
     
 The format is as follows:
 [

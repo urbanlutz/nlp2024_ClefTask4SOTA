@@ -21,21 +21,17 @@ class Experiment:
             model: Model,
             prompt_template: Callable[[str], str],
             extract: Callable[[Model, Callable[[str], str], str], str],
-            post_proc = None
             ):
         self.model = model
         self.extract = extract
         self.name = f"{extract.__name__}-{prompt_template.__name__}-{model.__name__}"
         self.prompt_template = prompt_template
-        self.post_proc = post_proc
     
     def __call__(self, sample: str) -> str:
         extracted_text = self.extract(sample)
         truncated = self.model.cut_text(extracted_text, self.model.num_tokens(self.prompt_template("")))
         prompt = self.prompt_template(truncated)
         response = self.model.generate(prompt)
-        if self.post_proc:
-            response = self.post_proc(response)
         return response
     
     def __del__(self):
@@ -48,7 +44,8 @@ class Experiment:
 def run(
         experiment: Experiment,
         data_path: PATH,
-        max_iter = None
+        max_iter = None,
+        post_proc = None
         ):
     # define run name
     now_str = datetime.now().strftime('%Y%m%d-%H%M%S')
@@ -59,7 +56,7 @@ def run(
     if max_iter:
         dataset.all_paths = dataset.all_paths[:max_iter]
         
-    logger = LogResult(run_id, save_interval=1, do_write=True, additional_col_names=["ground_truth", "inference_s"])
+    logger = LogResult(run_id, save_interval=1, do_write=True, additional_col_names=["raw", "ground_truth", "inference_s"])
 
     if not experiment.model.is_loaded:
         experiment.model.load()
@@ -71,38 +68,10 @@ def run(
         model_output = experiment(tex)
         t_end = time.perf_counter()
         elapsed_time = t_end- t_start
-        logger.log(f, str(model_output), str(ground_truth), elapsed_time)
+        if post_proc:
+            processed = post_proc(model_output)
+        logger.log(f, str(processed), str(model_output), str(ground_truth), elapsed_time)
     df = logger.save()
     del experiment
     free_cuda_memory()
     return df
-
-
-# def run(
-#         extract_fn: Callable[[str], str],
-#         data_path: PATH,
-#         run_name:str,
-#         max_iter = None
-#         ):
-#     """
-#     extract_fn: A function passing the text to a language model, augmented by a prompt, to extract TDMS quadruples
-#     run_name: Information about the run, model name, experiment setup etc
-#     """
-#     # define run name
-#     now_str = datetime.now().strftime('%Y%m%d-%H%M%S')
-#     run_id = f"{PATH.get_name(data_path)}_{run_name}-{now_str}"
-
-
-#     dataset = TDMSDataset(data_path)
-#     if max_iter:
-#         dataset.all_paths = dataset.all_paths[:max_iter]
-#     logger = LogResult(run_id, do_write=True, additional_col_names=["ground_truth"])
-
-#     indexes = len(dataset)
-#     for i in tqdm(range(indexes)):
-#         f, tex, ground_truth = dataset[i]
-#         model_output = extract_fn(tex)
-
-#         logger.log(f, str(model_output), str(ground_truth))
-#     df = logger.save()
-#     return df
