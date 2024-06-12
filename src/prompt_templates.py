@@ -211,9 +211,10 @@ def extract_tdms_optimized02(tex, few_shot=True):
         
         """
 
+def few_shot_template_initial(tex):
+    return extract_tdms_initial(tex, True)
 
 zero_shot_template_initial = lambda tex: extract_tdms_initial(tex, False)
-few_shot_template_initial = lambda tex: extract_tdms_initial(tex, True)
 zero_shot_template_optimized01 = lambda tex: extract_tdms_optimized01(tex, False)
 few_shot_template_optimized01 = lambda tex: extract_tdms_optimized01(tex, True)
 zero_shot_template_optimized02 = lambda tex: extract_tdms_optimized02(tex, False)
