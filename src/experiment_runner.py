@@ -32,7 +32,7 @@ class Experiment:
         truncated = self.model.cut_text(extracted_text, self.model.num_tokens(self.prompt_template("")))
         prompt = self.prompt_template(truncated)
         response = self.model.generate(prompt)
-        return response
+        return prompt, response
     
     def __del__(self):
         del self.model
@@ -56,7 +56,7 @@ def run(
     if max_iter:
         dataset.all_paths = dataset.all_paths[:max_iter]
         
-    logger = LogResult(run_id, save_interval=1, do_write=True, additional_col_names=["raw", "ground_truth", "inference_s"])
+    logger = LogResult(run_id, save_interval=1, do_write=True, additional_col_names=["prompt", "raw", "ground_truth", "inference_s"])
 
     if not experiment.model.is_loaded:
         experiment.model.load()
@@ -65,12 +65,12 @@ def run(
     for i in tqdm(range(indexes)):
         f, tex, ground_truth = dataset[i]
         t_start = time.perf_counter()
-        model_output = experiment(tex)
+        prompt, model_output = experiment(tex)
         t_end = time.perf_counter()
         elapsed_time = t_end- t_start
         if post_proc:
             processed = post_proc(model_output)
-        logger.log(f, str(processed), str(model_output), str(ground_truth), elapsed_time)
+        logger.log(f, str(processed), str(prompt), str(model_output), str(ground_truth), elapsed_time)
     df = logger.save()
     del experiment
     free_cuda_memory()
