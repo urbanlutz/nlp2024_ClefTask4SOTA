@@ -52,7 +52,7 @@ Provide the JSON Array only. Do not include precision information in the reporte
 
 Entries:
 """
-def simple_fs_v2(tex):
+def simple_fs_v3(tex):
     return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
 
 Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score. The Score should be a number.
