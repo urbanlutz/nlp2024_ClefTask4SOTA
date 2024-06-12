@@ -1,6 +1,6 @@
+from src.dataset import UNANSWERABLE
 import re
 import json
-from src.dataset import UNANSWERABLE
 
 def _find_sections(tex):
     p = re.compile("\\\\section\\{(.+?)\\}(.*?)(?=\\\\section|$)", re.DOTALL)
@@ -52,10 +52,6 @@ def empty_to_unanswerable(text):
     else:
         return text
 
-import re
-
-from src.dataset import UNANSWERABLE
-
 def fish_json(text):
     return "[" + text.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
 
@@ -67,9 +63,9 @@ def remove_newline_tab(text):
 def replace_quotes(text):
     return text.replace('"', "'")
 
-import json
 
 def format(text):
+    text = empty_to_unanswerable(text)
     if text == UNANSWERABLE or text == UNANSWERABLE.rstrip("\n"):
         return text
     text = fish_json(text)
@@ -77,10 +73,11 @@ def format(text):
     # try to parse it, otherwise make a pseudo correct structure
     try:
         text = str(json.loads(text))
-    except:
+    except Exception as e:
         text = remove_newline_tab(text)
         text = replace_quotes(text)
     return text
+
 def _convert_tdms_to_tuple(model_output_parsed):
     tuples = []
     for item in model_output_parsed:
