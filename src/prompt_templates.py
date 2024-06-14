@@ -163,7 +163,7 @@ If no entry is found, return an empty JSON Array.
 Entries:
 """
 
-def simple_zs_5(tex):
+def simple_zs_v5(tex):
     return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
 Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score. The Score should be a number.
 
