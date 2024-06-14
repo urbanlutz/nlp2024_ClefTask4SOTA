@@ -114,9 +114,12 @@ def _clean_unparsable_chars(text):
     return re.sub(r"\.\.\.", "", text)
 
 def format(text):
+    text = empty_to_unanswerable(text)
+    if text == UNANSWERABLE or text == UNANSWERABLE.rstrip("\n"):
+        return text
     text = fish_json(text)
     text = _clean_unparsable_chars(text)
-    text = empty_to_unanswerable(text)
+    text = empty_to_unanswerable(text) # anything left?
     if text == UNANSWERABLE or text == UNANSWERABLE.rstrip("\n"):
         return text
 
@@ -128,7 +131,7 @@ def format(text):
         text = remove_newline_tab(text)
         text = replace_quotes(text)
     text = _regex_demonstration_away(text)
-    text = empty_to_unanswerable(text)
+    text = empty_to_unanswerable(text) # anything left?
     return text
 
 # def _convert_tdms_to_tuple(model_output_parsed):
