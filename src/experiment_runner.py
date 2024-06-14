@@ -56,11 +56,11 @@ def run(
     if max_iter:
         dataset.all_paths = dataset.all_paths[:max_iter]
         
+    print(run_id)
     logger = LogResult(run_id, save_interval=1, do_write=True, additional_col_names=["prompt", "raw", "ground_truth", "inference_s"])
 
     if not experiment.model.is_loaded:
         experiment.model.load()
-
     indexes = len(dataset)
     for i in tqdm(range(indexes)):
         f, tex, ground_truth = dataset[i]
