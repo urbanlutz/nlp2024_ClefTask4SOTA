@@ -109,6 +109,7 @@ def _regex_demonstration_away(text):
     r = r'\{[\"|\']LEADERBOARD[\"|\']: ?\{[\"|\']Task[\"|\']: ?[\"|\']Facial Expression Recognition \(?FER\)?[\"|\'], ?[\"|\']Dataset[\"|\']: ?[\"|\']Oulu-CASIA[\"|\'], ?[\"|\']Metric[\"|\']: ?[\"|\']Accuracy ?\(?\-? ?(10\-fold|weak expression|peak expression|combined)\)?[\"|\'], ?[\"|\']Score[\"|\']: [\"|\']?(\d\d).(\d\d)[\"|\']\}\}'
     return re.sub(r, "", text)
     
+    
 def _clean_unparsable_chars(text):
     return re.sub(r"\.\.\.", "", text)
 
