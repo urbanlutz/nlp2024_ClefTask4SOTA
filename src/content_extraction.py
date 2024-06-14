@@ -1,3 +1,4 @@
+from prompt_templates import DEMONSTRATION_OUTPUT
 from src.dataset import UNANSWERABLE
 import re
 import json
@@ -104,6 +105,12 @@ def add_LEADERBOARD(text):
     finally:
         return text
     
+def _remove_demonstration(text):
+    demo = DEMONSTRATION_OUTPUT.replace("[", "").replace("]")
+    text = text.replace(demo, "")
+    return text
+    
+    
 def _clean_unparsable_chars(text):
     return re.sub(r"\.\.\.", "", text)
 
@@ -123,40 +130,40 @@ def format(text):
         text = replace_quotes(text)
     return text
 
-def _convert_tdms_to_tuple(model_output_parsed):
-    tuples = []
-    for item in model_output_parsed:
-        try:
-            t = ((item["Task"], item["Dataset"],item["Metric"],item["Score"]))
-            tuples.append(t)
-        except:
-            # parse error, ignore instance
-            pass
-    return tuples
+# def _convert_tdms_to_tuple(model_output_parsed):
+#     tuples = []
+#     for item in model_output_parsed:
+#         try:
+#             t = ((item["Task"], item["Dataset"],item["Metric"],item["Score"]))
+#             tuples.append(t)
+#         except:
+#             # parse error, ignore instance
+#             pass
+#     return tuples
 
-def _format_tdms(tuples):
-    """make unique, format as string"""
-    unique = set(tuples)
-    dicts = [{"LEADERBOARD": {
-        "Task": t,
-        "Dataset":d,
-        "Metric":m,
-        "Score":s
-    }} for t,d,m,s in unique]
-    if dicts:
-        return str(dicts)
-    else:
-        return UNANSWERABLE
+# def _format_tdms(tuples):
+#     """make unique, format as string"""
+#     unique = set(tuples)
+#     dicts = [{"LEADERBOARD": {
+#         "Task": t,
+#         "Dataset":d,
+#         "Metric":m,
+#         "Score":s
+#     }} for t,d,m,s in unique]
+#     if dicts:
+#         return str(dicts)
+#     else:
+#         return UNANSWERABLE
 
 
-def parse_response(response):
-    try:
-        response = response.replace("\\", "")
-        response = "[" + response.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
-        response = json.loads(response)
-        response = _convert_tdms_to_tuple(response)
-        return _format_tdms(response)
-    except Exception as ex:
-        print(ex)
-        print(str(response))
-        return str(response)
+# def parse_response(response):
+#     try:
+#         response = response.replace("\\", "")
+#         response = "[" + response.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
+#         response = json.loads(response)
+#         response = _convert_tdms_to_tuple(response)
+#         return _format_tdms(response)
+#     except Exception as ex:
+#         print(ex)
+#         print(str(response))
+#         return str(response)

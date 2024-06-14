@@ -1,5 +1,5 @@
 
-DEMONSTRATION_INPUT = """table
+DEMONSTRATION_INPUT = f"""table
 [!tp]\\setlength{{\\tabcolsep}}{{0.5pt}}
 \\begin{{center}}
     \\caption{{Performance comparison on Oulu-CASIA database in terms of average classification accuracy of the 10-fold cross-validation when evaluating on three different test sets, including ``weak expression", ``peak expression" and ``combined", respectively.}}
@@ -16,11 +16,11 @@ DEMONSTRATION_INPUT = """table
     \\end{{tabular}}
 \\end{{center}}  and provide the JSON Array only."""
 
-DEMONSTRATION_OUTPUT = """[
+DEMONSTRATION_OUTPUT = f"""[
     {{LEADERBOARD: {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}}}
 ]"""
 
-DESIRED_FORMAT = """[
+DESIRED_FORMAT = f"""[
     {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
     {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
 ]"""
