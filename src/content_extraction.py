@@ -105,11 +105,9 @@ def add_LEADERBOARD(text):
     finally:
         return text
     
-def _remove_demonstration(text):
-    demo = DEMONSTRATION_OUTPUT.replace("[", "").replace("]")
-    text = text.replace(demo, "")
-    return text
-    
+def _regex_demonstration_away(text):
+    r = r'\{[\"|\']LEADERBOARD[\"|\']: ?\{[\"|\']Task[\"|\']: ?[\"|\']Facial Expression Recognition \(FER\)[\"|\'], ?[\"|\']Dataset[\"|\']: ?[\"|\']Oulu-CASIA[\"|\'], ?[\"|\']Metric[\"|\']: ?[\"|\']Accuracy ?\(10-fold\)[\"|\'], ?[\"|\']Score[\"|\']: ?[\"|\']?84\.59[\"|\']?\}\}?,?'
+    return re.sub(r, "", text)
     
 def _clean_unparsable_chars(text):
     return re.sub(r"\.\.\.", "", text)
@@ -128,6 +126,8 @@ def format(text):
     except Exception as e:
         text = remove_newline_tab(text)
         text = replace_quotes(text)
+    text = _regex_demonstration_away(text)
+    text = empty_to_unanswerable(text)
     return text
 
 # def _convert_tdms_to_tuple(model_output_parsed):
