@@ -17,7 +17,7 @@ DEMONSTRATION_INPUT = f"""table
 \\end{{center}}  and provide the JSON Array only."""
 
 DEMONSTRATION_OUTPUT = f"""[
-    {{LEADERBOARD: {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}}}
+    {{"LEADERBOARD": {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}}}
 ]"""
 
 DESIRED_FORMAT = f"""[
