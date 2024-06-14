@@ -108,11 +108,11 @@ def _clean_unparsable_chars(text):
     return re.sub(r"\.\.\.", "", text)
 
 def format(text):
+    text = fish_json(text)
+    text = _clean_unparsable_chars(text)
     text = empty_to_unanswerable(text)
     if text == UNANSWERABLE or text == UNANSWERABLE.rstrip("\n"):
         return text
-    text = fish_json(text)
-    text = _clean_unparsable_chars(text)
 
     text = add_LEADERBOARD(text)
     # try to parse it, otherwise make a pseudo correct structure

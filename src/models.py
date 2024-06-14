@@ -3,19 +3,22 @@ from collections import namedtuple
 import torch
 import ollama
 
-ModelId = namedtuple("ModelId", "hf ollama")
+ModelId = namedtuple("ModelId", "hf ollama architecture flavour size")
 
 class ARCHITECTURE:
-    MISTRAL_7b = ModelId("mistralai/Mistral-7B-v0.3","mistral:7b")
-    MISTRAL_7b_IT = ModelId("mistralai/Mistral-7B-Instruct-v0.3", "mistral:instruct")
-    GEMMA_7b = ModelId("google/gemma-7b", "gemma:7b")
-    GEMMA_2b = ModelId("google/gemma-2b", "gemma:2b")
-    # GEMMA_IT = ModelId("google/gemma-7b-it", "None")
-    LLAMA_8b = ModelId("meta-llama/Meta-Llama-3-8B", "llama3:8b")
-    LLAMA_8b_IT = ModelId("meta-llama/Meta-Llama-3-8B-Instruct", "llama3:instruct")
-    LLAMA_70b = ModelId("meta-llama/Meta-Llama-3-70B", "llama3:70b")
-    MIXTRAL_22B = ModelId("mistralai/Mixtral-8x22B-v0.1", "mixtral:8x22b")
-    MIXTRAL_7B = ModelId("mistralai/Mixtral-8x7B-v0.1", "mixtral:8x7b")
+    MISTRAL_7b = ModelId("mistralai/Mistral-7B-v0.3","mistral:7b", "Mistral", "vanilla", "7b")
+    CODESTRAL = ModelId("mistralai/Mistral-7B-v0.3","codestral", "Mistral", "Codestral", "22b")
+    MISTRAL_7b_IT = ModelId("mistralai/Mistral-7B-Instruct-v0.3", "mistral:instruct", "Mistral", "Instruct", "7b")
+    GEMMA_7b = ModelId("google/gemma-7b", "gemma:7b", "Gemma", "vanilla", "7b")
+    GEMMA_2b = ModelId("google/gemma-2b", "gemma:2b", "Gemma", "vanilla", "2b")
+    LLAMA_8b = ModelId("meta-llama/Meta-Llama-3-8B", "llama3:8b", "Llama", "vanilla", "8b")
+    CMD_RPLUS = ModelId("CohereForAI/c4ai-command-r-plus", "command-r-plus", "Cohere", "Command R+", "104b")
+    LLAMA_8b_IT = ModelId("meta-llama/Meta-Llama-3-8B-Instruct", "llama3:instruct", "Llama", "Instruct", "8b")
+    LLAMA_70b = ModelId("meta-llama/Meta-Llama-3-70B", "llama3:70b", "Llama", "vanilla", "70b")
+    MIXTRAL_22B = ModelId("mistralai/Mixtral-8x22B-v0.1", "mixtral:8x22b", "Mixtral", "vanilla", "8x22b")
+    MIXTRAL_7B = ModelId("mistralai/Mixtral-8x7B-v0.1", "mixtral:8x7b", "Mixtral", "vanilla", "8x7b")
+    MIXTRAL_7B_IT = ModelId("mistralai/Mixtral-8x7B-v0.1", "mixtral:instruct", "Mixtral", "Instruct", "8x7b")
+    MIXTRAL_22B_IT = ModelId("mistralai/Mixtral-8x22B-v0.1", "mixtral:8x22b-instruct", "Mixtral", "vanilla", "8x22b")
 
 
 class OllamaModel:
