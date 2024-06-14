@@ -1,10 +1,35 @@
+
+DEMONSTRATION_INPUT = """table
+[!tp]\\setlength{{\\tabcolsep}}{{0.5pt}}
+\\begin{{center}}
+    \\caption{{Performance comparison on Oulu-CASIA database in terms of average classification accuracy of the 10-fold cross-validation when evaluating on three different test sets, including ``weak expression", ``peak expression" and ``combined", respectively.}}
+    \\label{{table:oulu_compare}}
+    \\begin{{tabular}}{{c|c|c|c}}
+        \\hline\\noalign{{\\smallskip}}
+        Method & weak expression & peak expression & combined\\\\
+        \\hline
+        PPDN(standard SGD) &  67.05\\% & 82.91\\% &73.54\\%\\\\	
+        GoogLeNet (baseline) & 64.64\\%& 79.21\\% &71.32\\%\\\\
+        \\hline
+        PPDN  & \\textbf{{67.95\\%}}&\\textbf{{84.59\\%}} & \\textbf{{74.99\\%}}\\\\
+        \\hline
+    \\end{{tabular}}
+\\end{{center}}  and provide the JSON Array only."""
+
+DEMONSTRATION_OUTPUT = """[
+    {{LEADERBOARD: {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}}}
+]"""
+
+DESIRED_FORMAT = """[
+    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
+    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
+]"""
+
+
 def simple_zs(tex):
     return f"""If the text reports benchmark leaderboard results, extract the reported Tasks, Datasets, Metrics and corresponding Scores.
 Return the tasks, datasets, metrics and scores as reported in the text in a JSON array:
-[
-    {{LEADERBOARD: {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}}}, 
-    {{LEADERBOARD: {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}}}
-]
+{DESIRED_FORMAT}
 
 Text:
 {tex}
@@ -16,34 +41,16 @@ Entries:"""
 def simple_fs(tex):
     return f"""If the text reports benchmark leaderboard results, extract the reported Tasks, Datasets, Metrics and corresponding Scores.
 Return the tasks, datasets, metrics and scores as reported in the text in a JSON array:
-[
-    {{LEADERBOARD: {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}}}, 
-    {{LEADERBOARD: {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}}}
-]
+{DESIRED_FORMAT}
+
 Heres an example:
-Text: table
-[!tp]\\setlength{{\\tabcolsep}}{{0.5pt}}
-\\begin{{center}}
-    \\caption{{Performance comparison on Oulu-CASIA database in terms of average classification accuracy of the 10-fold cross-validation when evaluating on three different test sets, including ``weak expression", ``peak expression" and ``combined", respectively.}}
-    \\label{{table:oulu_compare}}
-    \\begin{{tabular}}{{c|c|c|c}}
-        \\hline\\noalign{{\\smallskip}}
-        Method & weak expression & peak expression & combined\\\\
-        \\hline
-        PPDN(standard SGD) &  67.05\\% & 82.91\\% &73.54\\%\\\\	
-        GoogLeNet (baseline) & 64.64\\%& 79.21\\% &71.32\\%\\\\
-        \\hline
-        PPDN  & \\textbf{{67.95\\%}}&\\textbf{{84.59\\%}} & \\textbf{{74.99\\%}}\\\\
-        \\hline
-    \\end{{tabular}}
-\\end{{center}}  and provide the JSON Array only.
+Text: 
+{DEMONSTRATION_INPUT}
 
 Provide the JSON Array only. Do not include precision information in the reported score.
 
 Entries:
-[
-    {{LEADERBOARD: {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}}}
-]
+{DEMONSTRATION_OUTPUT}
 
 Text:
 {tex}
@@ -53,43 +60,25 @@ Provide the JSON Array only. Do not include precision information in the reporte
 Entries:
 """
 
+
+
 def simple_fs_v2(tex):
     return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
 
 Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score.
     
 The format is as follows:
-[
-    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
-    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
-]
+{DESIRED_FORMAT}
 
 Heres an example:
 Text: 
-table
-[!tp]\\setlength{{\\tabcolsep}}{{0.5pt}}
-\\begin{{center}}
-    \\caption{{Performance comparison on Oulu-CASIA database in terms of average classification accuracy of the 10-fold cross-validation when evaluating on three different test sets, including ``weak expression", ``peak expression" and ``combined", respectively.}}
-    \\label{{table:oulu_compare}}
-    \\begin{{tabular}}{{c|c|c|c}}
-        \\hline\\noalign{{\\smallskip}}
-        Method & weak expression & peak expression & combined\\\\
-        \\hline
-        PPDN(standard SGD) &  67.05\\% & 82.91\\% &73.54\\%\\\\	
-        GoogLeNet (baseline) & 64.64\\%& 79.21\\% &71.32\\%\\\\
-        \\hline
-        PPDN  & \\textbf{{67.95\\%}}&\\textbf{{84.59\\%}} & \\textbf{{74.99\\%}}\\\\
-        \\hline
-    \\end{{tabular}}
-\\end{{center}}  and provide the JSON Array only.
+{DEMONSTRATION_INPUT}
 
 Provide a JSON Array of objects in the specified format above. If no entry is found, return an empty JSON Array.
 
 
 Entries:
-[
-    {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}
-]
+{DEMONSTRATION_OUTPUT}
 
 Text:
 {tex}
@@ -105,45 +94,27 @@ def simple_fs_v3(tex):
 
 Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score. The Score should be a number.
     
-
 Heres an example:
 Text: 
-table
-[!tp]\\setlength{{\\tabcolsep}}{{0.5pt}}
-\\begin{{center}}
-    \\caption{{Performance comparison on Oulu-CASIA database in terms of average classification accuracy of the 10-fold cross-validation when evaluating on three different test sets, including ``weak expression", ``peak expression" and ``combined", respectively.}}
-    \\label{{table:oulu_compare}}
-    \\begin{{tabular}}{{c|c|c|c}}
-        \\hline\\noalign{{\\smallskip}}
-        Method & weak expression & peak expression & combined\\\\
-        \\hline
-        PPDN(standard SGD) &  67.05\\% & 82.91\\% &73.54\\%\\\\	
-        GoogLeNet (baseline) & 64.64\\%& 79.21\\% &71.32\\%\\\\
-        \\hline
-        PPDN  & \\textbf{{67.95\\%}}&\\textbf{{84.59\\%}} & \\textbf{{74.99\\%}}\\\\
-        \\hline
-    \\end{{tabular}}
-\\end{{center}}  and provide the JSON Array only.
+{DEMONSTRATION_INPUT}
 
 Entries:
-[
-    {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}
-]
+{DEMONSTRATION_OUTPUT}
 
 
 Text:
 {tex}
 
 Provide a JSON Array of objects in the following format:
+{DESIRED_FORMAT}
 
-[
-    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
-    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
-]
 If no entry is found, return an empty JSON Array.
 
 Entries:
 """
+
+
+
 def simple_fs_v4a(tex):
     return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
 
@@ -152,26 +123,10 @@ Each benchmark result is represented by an object with four attributes: Task, Da
 
 Here's an example:
 Text: 
-[!tp]\\setlength{{\\tabcolsep}}{{0.5pt}}
-\\begin{{center}}
-    \\caption{{Performance comparison on Oulu-CASIA database in terms of average classification accuracy of the 10-fold cross-validation when evaluating on three different test sets, including ``weak expression", ``peak expression" and ``combined", respectively.}}
-    \\label{{table:oulu_compare}}
-    \\begin{{tabular}}{{c|c|c|c}}
-        \\hline\\noalign{{\\smallskip}}
-        Method & weak expression & peak expression & combined\\\\
-        \\hline
-        PPDN(standard SGD) &  67.05\\% & 82.91\\% &73.54\\%\\\\	
-        GoogLeNet (baseline) & 64.64\\%& 79.21\\% &71.32\\%\\\\
-        \\hline
-        PPDN  & \\textbf{{67.95\\%}}&\\textbf{{84.59\\%}} & \\textbf{{74.99\\%}}\\\\
-        \\hline
-    \\end{{tabular}}
-\\end{{center}}  and provide the JSON Array only.
+{DEMONSTRATION_INPUT}
 
 Entries:
-[
-    {{"Task": "Facial Expression Recognition (FER)", "Dataset": "Oulu-CASIA", "Metric": "Accuracy (10-fold)", "Score": "84.59"}}
-]
+{DEMONSTRATION_OUTPUT}
 
 Extract these leaderboard entries:
 
@@ -179,15 +134,52 @@ Text:
 {tex}
 
 Provide a JSON Array of objects in the following format:
+{DESIRED_FORMAT}
 
-[
-    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
-    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
-]
 If no entry is found, return an empty JSON Array.
 
 Entries:
 """
+def simple_fs_v5(tex):
+    return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
+Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score. The Score should be a number.
+
+Here's an example:
+Text: 
+{DEMONSTRATION_INPUT}
+
+Entries:
+{DEMONSTRATION_OUTPUT}
+
+Extract these leaderboard entries:
+Text:
+{tex}
+
+Provide a JSON Array of objects in the following format:
+{DESIRED_FORMAT}
+
+If no entry is found, return an empty JSON Array.
+
+Entries:
+"""
+
+def simple_zs_5(tex):
+    return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
+Each benchmark result is represented by an object with four attributes: Task, Dataset, Metric, Score. The Score should be a number.
+
+Extract these leaderboard entries:
+Text:
+{tex}
+
+Provide a JSON Array of objects in the following format:
+{DESIRED_FORMAT}
+
+If no entry is found, return an empty JSON Array.
+
+Entries:
+"""
+
+
 def simple_fs_v4b(tex):
     return f"""If the text reports benchmark results, extract the reported Tasks, Datasets, Metrics and Scores.
 
@@ -210,11 +202,8 @@ Text:
 {tex}
 
 Provide a JSON Array of objects in the following format:
+{DESIRED_FORMAT}
 
-[
-    {{"Task": "example Task 1", "Dataset": "example Dataset 1", "Metric": example metric 1", "Score": "score"}}, 
-    {{"Task": "example Task 1","Dataset": "example Dataset 2", "Metric": example metric 2", "Score": "score"}}
-]
 If no entry is found, return an empty JSON Array.
 
 Entries:
