@@ -54,7 +54,18 @@ def _is_empty(text):
     return _information(text) < 10
 
 def empty_to_unanswerable(text):
-    if len(text) < 10 or _is_empty(text) or "please provide the text" in text.lower()  or "no specific text provided" in text.lower():
+    if (
+        len(text) < 10 
+        or _is_empty(text)
+        or any(term in text.lower() for term in [
+            "cannot generate",
+            "cannot extract",
+            "not possible",
+            "there are no",
+            "please provide the text",
+            "no specific text provided"
+            ])
+    ):
         return UNANSWERABLE
     else:
         return text
