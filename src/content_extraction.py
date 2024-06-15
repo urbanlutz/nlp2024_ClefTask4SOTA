@@ -60,10 +60,12 @@ def empty_to_unanswerable(text):
         or any(term in text.lower() for term in [
             "cannot generate",
             "cannot extract",
+            "unable to extract",
             "not possible",
             "there are no",
             "please provide the text",
-            "no specific text provided"
+            "no specific text provided",
+            "does not provide",
             ])
     ):
         return UNANSWERABLE
