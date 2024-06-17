@@ -1,7 +1,10 @@
 # nlp2024_ClefTask4SOTA
 This repository contains to code our solution to the shared task "SOTA" from the SimpleText Lab at the CLEF 2024 conference.
 
-Main author: Urban Lutz
+Authors:
+- Urban Lutz (main)
+- Christoph Zweifel (word2vec notebooks)
+- Luzi Schöb (parts of src/prompt_templates.py)
 
 In the notebook experiments.ipynb, the main logic to conduct experiments is implemented, therefore this is a great starting point to review our code.
 The file data_exploration.ipynb and section_analysis.ipynb were used to analyze our dataset and the content extraction logic. 
