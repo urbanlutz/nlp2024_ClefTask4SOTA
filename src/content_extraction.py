@@ -66,6 +66,7 @@ def empty_to_unanswerable(text):
             "please provide the text",
             "no specific text provided",
             "does not provide",
+            "it seems like"
             ])
     ):
         return UNANSWERABLE
@@ -140,7 +141,7 @@ def format(text):
     # try to parse it, otherwise make a pseudo correct structure
     try:
         text = str(json.loads(text))
-    except Exception as e:
+    except:
         text = remove_newline_tab(text)
         text = replace_quotes(text)
     text = _regex_demonstration_away(text)
