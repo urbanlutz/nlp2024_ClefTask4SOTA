@@ -1,6 +1,7 @@
+from src.prompt_templates import DEMONSTRATION_OUTPUT
+from src.dataset import UNANSWERABLE
 import re
 import json
-from src.dataset import UNANSWERABLE
 
 def _find_sections(tex):
     p = re.compile("\\\\section\\{(.+?)\\}(.*?)(?=\\\\section|$)", re.DOTALL)
@@ -46,41 +47,140 @@ def naive_doctaet(tex):
     ]
     return '\n'.join([f"{name}\n{text}" for name, text in elements])
 
+def _information(text):
+    return len(re.sub(r'\{|\}|\[|\]|"|\'|:|,| |\n|leaderboard|task|dataset|metric|score|null|none', "", text.lower()))
 
+def _is_empty(text):
+    return _information(text) < 10
 
-def _convert_tdms_to_tuple(model_output_parsed):
-    tuples = []
-    for item in model_output_parsed:
-        try:
-            t = ((item["Task"], item["Dataset"],item["Metric"],item["Score"]))
-            tuples.append(t)
-        except:
-            # parse error, ignore instance
-            pass
-    return tuples
-
-def _format_tdms(tuples):
-    """make unique, format as string"""
-    unique = set(tuples)
-    dicts = [{"LEADERBOARD": {
-        "Task": t,
-        "Dataset":d,
-        "Metric":m,
-        "Score":s
-    }} for t,d,m,s in unique]
-    if dicts:
-        return str(dicts)
-    else:
+def empty_to_unanswerable(text):
+    if (
+        len(text) < 10 
+        or _is_empty(text)
+        or any(term in text.lower() for term in [
+            "cannot generate",
+            "cannot extract",
+            "unable to extract",
+            "not possible",
+            "there are no",
+            "please provide the text",
+            "no specific text provided",
+            "does not provide",
+            ])
+    ):
         return UNANSWERABLE
+    else:
+        return text
+
+def fish_json(text):
+    return "[" + text.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
+
+def remove_newline_tab(text):
+    text = re.sub("\n|\t", "", text)
+    text = re.sub(" +", " ", text)
+    return text
+
+def replace_quotes(text):
+    return text.replace('"', "'")
 
 
-def parse_response(response):
+def _add_LB_regex(text):
+    if '"' in text:
+        lb = '{"LEADERBOARD":{'
+    else:
+        lb = "{'LEADERBOARD':{"
+    text = re.sub(r"\{", lb, text)
+    text = re.sub(r"\}", "}}", text)
+    return text
+
+def _remove_LB_regex(text):
+    text = re.sub(r'\{[ |\n|\t]*["|\']LEADERBOARD["|\']:[ |\n|\t]*{', "{", text)
+    text = re.sub(r"\}[ |\n|\t]*\}", "}", text)
+    return text
+
+def _add_LB_json(text):
+    parsed = json.loads(text)
+    parsed = [{"LEADERBOARD": obj} for obj in parsed]
+    return json.dumps(parsed)
+
+def _remove_LB_json(text):
+    parsed = json.loads(text)
+    parsed = [d.get("LEADERBOARD", d) for d in parsed]
+    return json.dumps(parsed)
+
+def add_LEADERBOARD(text):
     try:
-        response = response.replace("\\", "")
-        response = "[" + response.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
-        response = json.loads(response)
-        response = _convert_tdms_to_tuple(response)
-        return _format_tdms(response)
-    except Exception as ex:
-        print(ex)
-        return str(response)
+        text = _remove_LB_json(text)
+        text = _add_LB_json(text)
+    except:
+        text = _remove_LB_regex(text)
+        text = _add_LB_regex(text)
+    finally:
+        return text
+    
+def _regex_demonstration_away(text):
+    r = r'\{[\"|\']LEADERBOARD[\"|\']: ?\{[\"|\']Task[\"|\']: ?[\"|\']Facial Expression Recognition \(?FER\)?[\"|\'], ?[\"|\']Dataset[\"|\']: ?[\"|\']Oulu-CASIA[\"|\'], ?[\"|\']Metric[\"|\']: ?[\"|\']Accuracy ?\(?\-? ?(\(?10\-fold\)?|weak expression|peak expression|combined)\)?[\"|\'], ?[\"|\']Score[\"|\']: [\"|\']?(\d\d).(\d\d)[\"|\']?\}\} ?,?'
+    return re.sub(r, "", text)
+    
+
+def _clean_unparsable_chars(text):
+    return re.sub(r"\.\.\.", "", text)
+
+def format(text):
+    text = empty_to_unanswerable(text)
+    if text == UNANSWERABLE or text == UNANSWERABLE.rstrip("\n"):
+        return text
+    text = fish_json(text)
+    text = _clean_unparsable_chars(text)
+    text = empty_to_unanswerable(text) # anything left?
+    if text == UNANSWERABLE or text == UNANSWERABLE.rstrip("\n"):
+        return text
+
+    text = add_LEADERBOARD(text)
+    # try to parse it, otherwise make a pseudo correct structure
+    try:
+        text = str(json.loads(text))
+    except Exception as e:
+        text = remove_newline_tab(text)
+        text = replace_quotes(text)
+    text = _regex_demonstration_away(text)
+    text = empty_to_unanswerable(text) # anything left?
+    return text
+
+# def _convert_tdms_to_tuple(model_output_parsed):
+#     tuples = []
+#     for item in model_output_parsed:
+#         try:
+#             t = ((item["Task"], item["Dataset"],item["Metric"],item["Score"]))
+#             tuples.append(t)
+#         except:
+#             # parse error, ignore instance
+#             pass
+#     return tuples
+
+# def _format_tdms(tuples):
+#     """make unique, format as string"""
+#     unique = set(tuples)
+#     dicts = [{"LEADERBOARD": {
+#         "Task": t,
+#         "Dataset":d,
+#         "Metric":m,
+#         "Score":s
+#     }} for t,d,m,s in unique]
+#     if dicts:
+#         return str(dicts)
+#     else:
+#         return UNANSWERABLE
+
+
+# def parse_response(response):
+#     try:
+#         response = response.replace("\\", "")
+#         response = "[" + response.split("[", 1)[-1].rsplit("]", 1)[0] + "]"
+#         response = json.loads(response)
+#         response = _convert_tdms_to_tuple(response)
+#         return _format_tdms(response)
+#     except Exception as ex:
+#         print(ex)
+#         print(str(response))
+#         return str(response)
