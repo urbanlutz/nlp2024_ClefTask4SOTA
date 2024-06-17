@@ -1,11 +1,10 @@
 # nlp2024_ClefTask4SOTA
-NLP Implementation Project
+This repository contains to code our solution to the shared task "SOTA" from the SimpleText Lab at the CLEF 2024 conference.
 
-## Previous Work
-https://github.com/Kabongosalomon/task-dataset-metric-nli-extraction/tree/latex
-They are doing exactly the same but without the score, only TDM (task, dataset, metric)
+Main author: Urban Lutz
 
-https://github.com/IBM/science-result-extractor
+In the notebook experiments.ipynb, the main logic to conduct experiments is implemented, therefore this is a great starting point to review our code.
+The file data_exploration.ipynb and section_analysis.ipynb were used to analyze our dataset and the content extraction logic. 
+The files prefixed by word2vec are partial implementations to improve the content extraction logic.
 
-## Similar Task
-https://github.com/paperswithcode/axcell
+The folder scoring_program contains the official evaluation script as published by the authors. We apply it to our data in the file evaluation.ipynb.
